@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <title>Register</title>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.min.js"></script>
+</head>
+</head>
+<body>
+<section>
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-md-6 login-form-1">
+              <div class="marg">
+                <a href="login.html"><h3><span>Already have an account !</span> Login</h3></a>
+              </div>
+            </div>
+            <div class="col-md-6 login-form-2">
+                <h3>Register</h3>
+                <form>
+                    <p id="p"></p>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="name" placeholder="Name *" value="" required/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="email" placeholder="Your Email *" value="" required/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="pass" placeholder="Password *" value="" required/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="conf_pass" placeholder="Confirm Password *" value="" required/>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" class="btnSubmit" value="Submit" onclick="register_to()"/>
+                    </div>
+                    <!-- <div class="form-group">
+                        <a href="#" class="ForgetPwd" value="Login">Forget Password?</a>
+                    </div> -->
+                </form>
+            </div>
+        </div>
+    </div>
+</section>    
+</body>
+<script>
+
+function register_to()
+{
+    let userName = document.getElementById("name").value
+    let pass = document.getElementById("pass").value
+    let conf = document.getElementById("conf_pass").value
+    let email = document.getElementById("email").value
+
+    if(userName == "" && pass == "")
+    {
+        console.log("first fill then submit");
+    }
+    else{
+        
+        if(conf === pass)
+        {
+            fetch('http://192.168.1.10:80/api/create_account',{ method: 'POST', body: JSON.stringify({ 
+                "name": userName, 
+                "email_or_mobile": email, 
+                "token": "",
+                "password": pass,
+                "is_studio_admin": 1
+            }), 
+                headers: { 
+                "Content-type": "application/json; charset=UTF-8"
+            } })
+                .then((response) => response.json())
+                .then((data) =>  run_click(data))
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }else
+        {
+            document.getElementById("p").innerHTML="* Password and confirm password not matches";
+            return;
+        }
+    }
+}
+
+function run_click(data)
+{
+// console.log(data.user.id);
+if(data.user.id !== null)
+{
+    alert("account created");
+    window.location.href="./login.html"
+}
+else{
+    alert(data.error);
+}
+}
+</script>
+</html>

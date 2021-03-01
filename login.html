@@ -69,9 +69,10 @@ function Login_to()
 function click_log(data){
    
     // let token=data.token;
-    let id=data;
-    console.log(data);
+    let id=data.user.id;
+    // console.log(data);
     localStorage.setItem("token", data.token);
+    localStorage.setItem("id" , id);
     
     if(data.error == undefined)
     {

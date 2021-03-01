@@ -11,14 +11,16 @@
 <section id="body">
     <div class="container">
         <h1>Successfully login welcome to home page</h1>
+        <p id="profile"></p>
+        <input type="button" onclick=my_fun() value="Authanticate"/>
     </div>
 </section>    
 </body>
 <script>
-    document.getElementById("body").style.display="none";
+document.getElementById("body").style.display="none";
     var token = localStorage.getItem("token");
-    localStorage.removeItem("token");
-    console.log(token);
+    // localStorage.removeItem("token");
+    // console.log(token);
    if(token !== null)
    {
     document.getElementById("body").style.display="block";
@@ -26,5 +28,39 @@
    else{
        window.location.href="./login.html";
    }
+
+function my_fun()
+{
+    let id= localStorage.getItem("id");
+    if(token)
+    {
+        // for the same user verification 
+
+        var log=fetch("http://192.168.1.10:80/api/user/"+id,{method :'GET',
+                headers: { 
+                "Content-type": "application/json",
+                'Authorization': 'Bearer ' + token
+            } })
+        .then(response => response.json())
+        .then((data) => 
+        {
+            let variable="<table><tr><th>Srl.no.</th><th>Details</th></tr>";
+            variable += "<tr><td>ID : </td><td>"+data.data.id+"</td>";
+            variable += "<tr><td>Name : </td><td>"+data.data.name+"</td>";
+            variable += "<tr><td>Email : </td><td>"+data.data.email+"</td>";
+            variable += "<tr><td>Created At : </td><td>"+data.data.created_at+"</td>";
+            variable += "<tr><td>Updated At : </td><td>"+data.data.updated_at+"</td>";
+            variable+="</table>";
+    
+            document.getElementById("profile").innerHTML=variable;
+        })
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("id");
+        // console.log(log);
+    }else{
+        console.log(data.error);
+    }
+}
 </script>
 </html>
